@@ -1,47 +1,70 @@
 #!/bin/bash
 
-# Set up command line argument parsing
-while getopts ":v" opt; do
-  case $opt in
-    v)
+usage() {
+  echo "Usage: $0 [input_file] [output_directory] [-v]"
+  echo ""
+  echo "Copy the contents of input_file to all files in output_directory."
+  echo ""
+  echo "Options:"
+  echo "  -v: verbose mode"
+  exit 1
+}
+
+if [[ $# -eq 0 ]]; then
+  usage
+fi
+
+input_file=""
+output_directory=""
+verbose=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -v)
       verbose=true
+      shift
       ;;
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
+    *)
+      if [[ -z $input_file ]]; then
+        input_file=$1
+      elif [[ -z $output_directory ]]; then
+        output_directory=$1
+      else
+        echo "Unknown option: $1"
+        usage
+      fi
+      shift
       ;;
   esac
 done
 
-# Check for required arguments
-if [ -z "$1" ] || [ -z "$2" ]; then
-  echo "Usage: $0 [input_file] [output_directory]"
-  echo "  -v  Verbose mode. Print a message after the file is copied."
-  echo ""
-  echo "Copy an input file to an output directory. If the output directory does not exist, it will be created."
+if [[ -z $input_file || -z $output_directory ]]; then
+  usage
+fi
+
+if [[ ! -f $input_file ]]; then
+  echo "Input file not found: $input_file"
   exit 1
 fi
 
-# Get input file and output directory
-input_file=$1
-output_directory=$2
-
-# Make sure input file exists
-if [ ! -f "$input_file" ]; then
-  echo "Error: Input file '$input_file' does not exist."
+if [[ ! -d $output_directory ]]; then
+  echo "Output directory not found: $output_directory"
   exit 1
 fi
 
-# Make sure output directory exists, create it if not
-if [ ! -d "$output_directory" ]; then
-  mkdir -p "$output_directory"
+if [[ -n $verbose ]]; then
+  echo "Copying data from $input_file to all files in $output_directory"
 fi
 
-# Copy input file to output directory
-cp "$input_file" "$output_directory"
+for file in "$output_directory"/*; do
+  if [[ -f "$file" ]]; then
+    if [[ -n $verbose ]]; then
+      echo "Copying data to file: $file"
+    fi
+    cp "$input_file" "$file"
+  fi
+done
 
-# Print success message
-if [ "$verbose" = true ]; then
-  echo "Successfully copied '$input_file' to '$output_directory'."
-else
-  echo "Success!"
+if [[ -n $verbose ]]; then
+  echo "Done copying data"
 fi
