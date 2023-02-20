@@ -20,4 +20,4 @@ Note that if either the input file or the output directory is not provided, the 
 
 Suppose you have a directory `mydir` containing three output files `file1`, `file2`, and `file3`. You want to copy the contents of the input file `input.txt` to each of these files. You would run the following command in your terminal:
 
-`./copyinout.sh input.txt mydir`
+`./cpyio.sh input.txt mydir`
