@@ -6,7 +6,7 @@ This Bash script copies the contents of an input file to multiple output files i
 
 To use the script, run the following command:
 
-`./copyinout.sh [input_file] [output_directory]`
+`./cpyio.sh [input_file] [output_directory]`
 
 
 * `[input_file]`: The path to the input file whose contents you want to copy to the output files.
